@@ -81,3 +81,71 @@ private:
     int gcInterval_;
     std::thread gcThread_;
 };
+
+template <typename T>
+class MPointer {
+public:
+    static MPointer<T> New() {
+        T* ptr = new T();
+        MPointer<T> mp(ptr);
+        MPointerGC::getInstance().registerPointer(ptr);
+        return mp;
+    }
+
+    ~MPointer() {
+        MPointerGC::getInstance().deregisterPointer(ptr_);
+    }
+
+    T& operator*() {
+        return *ptr_;
+    }
+
+    T* operator->() {
+        return ptr_;
+    }
+
+    MPointer<T>& operator=(const T& value) {
+        *ptr_ = value;
+        return *this;
+    }
+
+    MPointer<T>& operator=(const MPointer<T>& other) {
+        if (this != &other) {
+            MPointerGC::getInstance().increaseReference(other.ptr_);
+            MPointerGC::getInstance().decreaseReference(ptr_);
+            ptr_ = other.ptr_;
+        }
+        return *this;
+    }
+
+    T operator&() const {
+        return *ptr_;
+    }
+
+private:
+    MPointer(T* ptr) : ptr_(ptr) {}
+
+    T* ptr_;
+};
+
+template <typename T>
+class ListaDoble {
+    struct Node {
+        MPointer<T> data;
+        MPointer<Node> next;
+        MPointer<Node> prev;
+
+        Node(const T& value) : data(MPointer<T>::New()) {
+
+        }
+    };
+
+    MPointer<Node> head;
+    MPointer<Node> tail;
+
+public:
+    ListaDoble() : head(nullptr), tail(nullptr) {}
+
+
+    //Aqui agregaré los metodos de las listas doblemente enlazadas que pondré despues
+};
