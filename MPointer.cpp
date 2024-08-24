@@ -148,4 +148,143 @@ public:
 
 
     //Aqui agregaré los metodos de las listas doblemente enlazadas que pondré despues
+
+    //Método para agregar un nodo al final de la lista
+    void append(const T& value) {
+        MPointer<Node> newNode = MPointer<Node>::New();
+        *newNode = Node(value);
+        if (tail) {
+            (*tail)->next = newNode;
+            (*newNode)->prev = tail;
+            tail = newNode;
+        } else {
+            head = tail = newNode;
+        }
+    }
+
+    // Método para agregar un nodo al inicio de la lista
+    void prepend(const T& value) {
+        MPointer<Node> newNode = MPointer<Node>::New();
+        *newNode = Node(value);
+        if (head) {
+            (*head)->prev = newNode;
+            (*newNode)->next = head;
+            head = newNode;
+        } else {
+            head = tail = newNode;
+        }
+    }
+
+    // Método para eliminar un nodo específico
+    void remove(const T& value) {
+        MPointer<Node> current = head;
+        while (current) {
+            if (**((*current)->data) == value) {
+                if ((*current)->prev) {
+                    (*(*current)->prev)->next = (*current)->next;
+                } else {
+                    head = (*current)->next;
+                }
+                if ((*current)->next) {
+                    (*(*current)->next)->prev = (*current)->prev;
+                } else {
+                    tail = (*current)->prev;
+                }
+                break;
+            }
+            current = (*current)->next;
+        }
+    }
+
+    // Método para buscar un valor en la lista
+    bool find(const T& value) const {
+        MPointer<Node> current = head;
+        while (current) {
+            if (**((*current)->data) == value) {
+                return true;
+            }
+            current = (*current)->next;
+        }
+        return false;
+    }
+
+    // Método para mostrar la lista
+    void display() const {
+        MPointer<Node> current = head;
+        while (current) {
+            std::cout << **((*current)->data) << " ";
+            current = (*current)->next;
+        }
+        std::cout << std::endl;
+    }
+
+    // Método para mostrar la lista en orden inverso
+    void displayReverse() const {
+        MPointer<Node> current = tail;
+        while (current) {
+            std::cout << **((*current)->data) << " ";
+            current = (*current)->prev;
+        }
+        std::cout << std::endl;
+    }
+
+    // Método para obtener el tamaño de la lista
+    int size() const {
+        int count = 0;
+        MPointer<Node> current = head;
+        while (current) {
+            count++;
+            current = (*current)->next;
+        }
+        return count;
+    }
+
+    // Método para vaciar la lista
+    void clear() {
+        head = nullptr;
+        tail = nullptr;
+    }
+
 };
+
+
+//Ahora vamos a hacer la función para probar la lista doblemente enlazada :D
+int main() {
+    MPointerGC::getInstance().startGC();
+
+    ListaDoble<int> lista;
+    lista.append(5);
+    lista.append(3);
+    lista.append(10);
+    lista.append(7);
+    lista.append(8);
+    lista.append(12);
+
+    std::cout << "Lista original: ";
+    lista.display();
+
+    std::cout << "Lista en orden inverso: ";
+    lista.displayReverse();
+
+    std::cout << "Tamaño de la lista: " << lista.size() << std::endl;
+
+    lista.prepend(2);
+    std::cout << "Lista después de prepend 2: ";
+    lista.display();
+
+    lista.remove(5);
+    std::cout << "Lista después de eliminar 5: ";
+    lista.display();
+
+    std::cout << "Buscar 10: " << (lista.find(10) ? "Encontrado" : "No encontrado") << std::endl;
+    std::cout << "Buscar 8: " << (lista.find(8) ? "Encontrado" : "No encontrado") << std::endl;
+
+    lista.clear();
+    std::cout << "Lista después de limpiar: ";
+    lista.display();
+    std::cout << "Tamaño de la lista: " << lista.size() << std::endl;
+
+    MPointerGC::getInstance().stopGC();
+    return 0;
+
+}
