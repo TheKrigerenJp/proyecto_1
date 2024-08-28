@@ -92,22 +92,19 @@ public:
         return mp;
     }
 
+    MPointer() : ptr_(nullptr) {} //agregado
+
     ~MPointer() {
-        MPointerGC::getInstance().deregisterPointer(ptr_);
-    }
+        if (ptr_) {
+            MPointerGC::getInstance().deregisterPointer(ptr_);
+        }
 
-    T& operator*() {
-        return *ptr_;
-    }
+    } //agregado
 
-    T* operator->() {
-        return ptr_;
-    }
+    MPointer(const MPointer<T>& other) : ptr_(other.ptr_) {
+        MPointerGC::getInstance().increaseReference(ptr_);
+    } //agregado
 
-    MPointer<T>& operator=(const T& value) {
-        *ptr_ = value;
-        return *this;
-    }
 
     MPointer<T>& operator=(const MPointer<T>& other) {
         if (this != &other) {
@@ -118,8 +115,12 @@ public:
         return *this;
     }
 
-    T operator&() const {
+    T& operator*() {
         return *ptr_;
+    } //agregado
+
+    T* operator->() {
+        return ptr_;
     }
 
 private:
@@ -135,7 +136,8 @@ class ListaDoble {
         MPointer<Node> next;
         MPointer<Node> prev;
 
-        Node(const T& value) : data(MPointer<T>::New()) {
+        Node(const T& value) : data(MPointer<T>::New()), next(nullptr), prev(nullptr) { //cambios agregados
+            *data = value; //agregado
 
         }
     };
@@ -154,8 +156,8 @@ public:
         MPointer<Node> newNode = MPointer<Node>::New();
         *newNode = Node(value);
         if (tail) {
-            (*tail)->next = newNode;
-            (*newNode)->prev = tail;
+            tail->next = newNode; //cambios
+            newNode->prev = tail; //cambios
             tail = newNode;
         } else {
             head = tail = newNode;
@@ -167,8 +169,8 @@ public:
         MPointer<Node> newNode = MPointer<Node>::New();
         *newNode = Node(value);
         if (head) {
-            (*head)->prev = newNode;
-            (*newNode)->next = head;
+            head->prev = newNode; //cambio
+            newNode->next = head; //cambio
             head = newNode;
         } else {
             head = tail = newNode;
@@ -179,20 +181,20 @@ public:
     void remove(const T& value) {
         MPointer<Node> current = head;
         while (current) {
-            if (**((*current)->data) == value) {
-                if ((*current)->prev) {
-                    (*(*current)->prev)->next = (*current)->next;
+            if (*(current->data) == value) { //cambio
+                if (current->prev) { //cambio
+                    current->prev->next = current->next; //cambio
                 } else {
-                    head = (*current)->next;
+                    head = current->next; //cambio
                 }
-                if ((*current)->next) {
-                    (*(*current)->next)->prev = (*current)->prev;
+                if (current->next) { //cambio
+                    current->next->prev = current->prev; //cambio
                 } else {
-                    tail = (*current)->prev;
+                    tail = current->prev; //cambio
                 }
                 break;
             }
-            current = (*current)->next;
+            current = current->next; //cambio
         }
     }
 
@@ -200,10 +202,10 @@ public:
     bool find(const T& value) const {
         MPointer<Node> current = head;
         while (current) {
-            if (**((*current)->data) == value) {
+            if (*(current->data) == value) { //cambio
                 return true;
             }
-            current = (*current)->next;
+            current = current->next; //cambio
         }
         return false;
     }
@@ -212,8 +214,8 @@ public:
     void display() const {
         MPointer<Node> current = head;
         while (current) {
-            std::cout << **((*current)->data) << " ";
-            current = (*current)->next;
+            std::cout << *(current->data) << " "; //cambio
+            current = current->next; //cambio
         }
         std::cout << std::endl;
     }
@@ -222,8 +224,8 @@ public:
     void displayReverse() const {
         MPointer<Node> current = tail;
         while (current) {
-            std::cout << **((*current)->data) << " ";
-            current = (*current)->prev;
+            std::cout << *(current->data) << " ";
+            current = current->prev;
         }
         std::cout << std::endl;
     }
@@ -234,7 +236,7 @@ public:
         MPointer<Node> current = head;
         while (current) {
             count++;
-            current = (*current)->next;
+            current = current->next; //cambio
         }
         return count;
     }
