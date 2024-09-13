@@ -5,7 +5,7 @@
 #include "2MPointer.h"
 
 template<typename T>
-MPointer<T>::MPointer() {
+MPointer<T>::MPointer() : Pointer(nullptr){
     id = GC->registerPointer(Pointer, TipoDato_deter<T>());
 
 }
@@ -32,14 +32,15 @@ MPointer<T> MPointer<T>::createNew() {
 
 template<typename T>
 T& MPointer<T>::operator*() {
+    VeriValue = true;
+    Pointer = new T();
+    GC->cambioAddress(id, Pointer);
     return *Pointer;
 }
 
 template<typename T>
 template<typename U>
 MPointer<T> &MPointer<T>::operator=(const U& value) {
-    VeriValue = true;
-    *Pointer = value;
     return *this;
 
 }
