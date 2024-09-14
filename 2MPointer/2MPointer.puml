@@ -1,0 +1,23 @@
+@startmindmap
+'https://plantuml.com/mindmap-diagram
+
+caption Diagrama 2
+title 2MPointer
+
+* <&flag>MainMPruebas
+
+** <&globe>MPointerGC.h
+*** MPointer.cpp
+*** 2MPointer.h
+
+
+** <&globe>2MPointer.h
+*** 2MPointer.cpp
+*** MainMPruebas.cpp
+
+** <&globe>ListaDoble.h
+*** ListaDoble.cpp
+
+
+
+@endmindmap

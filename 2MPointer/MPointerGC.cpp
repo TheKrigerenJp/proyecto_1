@@ -8,10 +8,12 @@
 MPointerGC* MPointerGC::instance = nullptr;
 std::mutex MPointerGC::mutex;
 
+//Constructor
 MPointerGC::MPointerGC() {
     threadGC = std::thread(&MPointerGC::CheckReferences, this);
 }
 
+//Destructor
 MPointerGC::~MPointerGC() {
     stopGC();
     if (threadGC.joinable()) {

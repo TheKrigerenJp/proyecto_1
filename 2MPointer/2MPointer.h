@@ -27,8 +27,8 @@ private:
     MPointer(); //Constructor privado como pidio el profe
 
 public:
-
-    ~MPointer(); //Destructor
+    //Destructor
+    ~MPointer();
     MPointer(const MPointer& original);
     static MPointer<T> createNew();
 

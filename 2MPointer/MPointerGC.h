@@ -21,8 +21,9 @@ private:
     std::thread threadGC;
 
     void CheckReferences();
-
+    //Constructor
     MPointerGC();
+    //Destructor
     ~MPointerGC();
 
 public:

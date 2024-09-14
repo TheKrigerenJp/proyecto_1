@@ -1,0 +1,22 @@
+@startmindmap
+'https://plantuml.com/mindmap-diagram
+
+caption Diagrama 1
+title Clase_para_Test
+
+* <&flag>MainTest
+** <&globe>nodeTest.h
+*** nodeTest.cpp
+*** DLL.h
+
+** <&globe>DLL.h
+*** DLL.cpp
+*** Sorts.h
+*** MainTest.cpp
+
+** <&globe>Sorts.h
+*** Sorts.cpp
+*** MainTest.cpp
+
+
+@endmindmap
